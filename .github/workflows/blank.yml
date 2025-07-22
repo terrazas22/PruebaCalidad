@@ -1,4 +1,5 @@
-name: Revisar Código JS
+# .github/workflows/html-linter.yml
+name: Verificación HTML/CSS/JS
 
 on:
   push:
@@ -7,19 +8,20 @@ on:
     branches: [main]
 
 jobs:
-  lint-js:
+  validar:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+    - name: Clonar el código
+      uses: actions/checkout@v3
 
-      - name: Instalar Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
+    - name: Validar HTML con htmlhint
+      uses: xt0rted/htmlhint-action@v1
+      with:
+        files: '**/*.html'
 
-      - name: Instalar dependencias
-        run: npm install
-
-      - name: Ejecutar ESLint
-        run: npx eslint . --ext .js
+    - name: Validar CSS con stylelint
+      uses: reviewdog/action-stylelint@v1
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        reporter: github-check
