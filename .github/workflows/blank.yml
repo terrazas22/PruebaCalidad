@@ -1,10 +1,7 @@
-# .github/workflows/html-linter.yml
-name: Verificación HTML/CSS/JS
+name: Revisar HTML, CSS y JS
 
 on:
   push:
-    branches: [main]
-  pull_request:
     branches: [main]
 
 jobs:
@@ -15,13 +12,23 @@ jobs:
     - name: Clonar el código
       uses: actions/checkout@v3
 
-    - name: Validar HTML con htmlhint
-      uses: xt0rted/htmlhint-action@v1
+    - name: Instalar Node.js
+      uses: actions/setup-node@v3
       with:
-        files: '**/*.html'
+        node-version: '16'
 
-    - name: Validar CSS con stylelint
-      uses: reviewdog/action-stylelint@v1
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        reporter: github-check
+    - name: Instalar linters
+      run: |
+        npm install -g htmlhint stylelint eslint
+
+    - name: Revisar HTML
+      run: |
+        htmlhint "**/*.html"
+
+    - name: Revisar CSS
+      run: |
+        stylelint "**/*.css"
+
+    - name: Revisar JS
+      run: |
+        eslint "**/*.js"
